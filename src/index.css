@@ -1,0 +1,615 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   RODIO TRADELINK — PROFESSIONAL ADMIN THEME
+========================================================= */
+
+:root {
+  --rodio-primary: #00c9a7;
+  --rodio-primary-dark: #00a98d;
+  --rodio-primary-soft: #e9fbf7;
+
+  --rodio-orange: #f97316;
+
+  --rodio-navy: #0f172a;
+  --rodio-text: #1e293b;
+  --rodio-text-light: #475569;
+  --rodio-muted: #64748b;
+
+  --rodio-bg: #f5f7fa;
+  --rodio-card: #ffffff;
+
+  --rodio-border: #e2e8f0;
+  --rodio-border-dark: #cbd5e1;
+
+  --rodio-success: #059669;
+  --rodio-success-bg: #ecfdf5;
+
+  --rodio-danger: #e11d48;
+  --rodio-danger-bg: #fff1f2;
+
+  --rodio-warning: #d97706;
+  --rodio-warning-bg: #fffbeb;
+
+  --rodio-info: #2563eb;
+  --rodio-info-bg: #eff6ff;
+}
+
+
+/* =========================================================
+   MAIN ADMIN CONTAINER
+========================================================= */
+
+.rodio-admin-theme {
+  min-height: 100vh;
+  background: var(--rodio-bg);
+  color: var(--rodio-text);
+
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   BACKGROUND OVERRIDES
+========================================================= */
+
+.rodio-admin-theme .bg-slate-950,
+.rodio-admin-theme .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+
+.rodio-admin-theme .bg-slate-800 {
+  background-color: #f8fafc !important;
+}
+
+
+/* =========================================================
+   BORDER SYSTEM
+========================================================= */
+
+.rodio-admin-theme .border-slate-800,
+.rodio-admin-theme .border-slate-700 {
+  border-color: var(--rodio-border) !important;
+}
+
+.rodio-admin-theme .border-indigo-800 {
+  border-color: rgba(0, 201, 167, 0.45) !important;
+}
+
+.rodio-admin-theme .border-indigo-500 {
+  border-color: var(--rodio-primary) !important;
+}
+
+.rodio-admin-theme .border-rose-800 {
+  border-color: rgba(225, 29, 72, 0.35) !important;
+}
+
+.rodio-admin-theme .border-emerald-800 {
+  border-color: rgba(5, 150, 105, 0.35) !important;
+}
+
+.rodio-admin-theme .border-amber-800 {
+  border-color: rgba(217, 119, 6, 0.35) !important;
+}
+
+
+/* =========================================================
+   TEXT SYSTEM
+========================================================= */
+
+.rodio-admin-theme .text-slate-200,
+.rodio-admin-theme .text-slate-300 {
+  color: #334155 !important;
+}
+
+.rodio-admin-theme .text-slate-400 {
+  color: #64748b !important;
+}
+
+.rodio-admin-theme .text-slate-500 {
+  color: #64748b !important;
+}
+
+.rodio-admin-theme .text-slate-600 {
+  color: #475569 !important;
+}
+
+.rodio-admin-theme .text-indigo-300,
+.rodio-admin-theme .text-indigo-400 {
+  color: var(--rodio-primary-dark) !important;
+}
+
+.rodio-admin-theme .text-emerald-300,
+.rodio-admin-theme .text-emerald-400 {
+  color: var(--rodio-success) !important;
+}
+
+.rodio-admin-theme .text-rose-300,
+.rodio-admin-theme .text-rose-400 {
+  color: var(--rodio-danger) !important;
+}
+
+.rodio-admin-theme .text-amber-300,
+.rodio-admin-theme .text-amber-400 {
+  color: var(--rodio-warning) !important;
+}
+
+
+/* =========================================================
+   PRIMARY TURQUOISE
+========================================================= */
+
+.rodio-admin-theme .bg-indigo-600 {
+  background-color: var(--rodio-primary) !important;
+}
+
+.rodio-admin-theme .bg-indigo-700 {
+  background-color: var(--rodio-primary-dark) !important;
+}
+
+.rodio-admin-theme .bg-indigo-950 {
+  background-color: var(--rodio-primary-soft) !important;
+}
+
+.rodio-admin-theme .bg-indigo-600\/20 {
+  background-color: rgba(0, 201, 167, 0.10) !important;
+}
+
+.rodio-admin-theme .bg-indigo-600\/10 {
+  background-color: rgba(0, 201, 167, 0.08) !important;
+}
+
+
+/* =========================================================
+   HOVER STATES
+========================================================= */
+
+.rodio-admin-theme .hover\:bg-indigo-700:hover {
+  background-color: var(--rodio-primary-dark) !important;
+}
+
+.rodio-admin-theme .hover\:bg-indigo-900:hover {
+  background-color: #dff8f3 !important;
+}
+
+.rodio-admin-theme .hover\:bg-slate-700:hover,
+.rodio-admin-theme .hover\:bg-slate-800:hover,
+.rodio-admin-theme .hover\:bg-slate-800\/50:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.rodio-admin-theme .hover\:text-white:hover {
+  color: var(--rodio-navy) !important;
+}
+
+
+/* =========================================================
+   SUCCESS
+========================================================= */
+
+.rodio-admin-theme .bg-emerald-950,
+.rodio-admin-theme .bg-emerald-950\/40,
+.rodio-admin-theme .bg-emerald-950\/80 {
+  background-color: var(--rodio-success-bg) !important;
+}
+
+
+/* =========================================================
+   DANGER
+========================================================= */
+
+.rodio-admin-theme .bg-rose-950,
+.rodio-admin-theme .bg-rose-950\/40,
+.rodio-admin-theme .bg-rose-950\/80 {
+  background-color: var(--rodio-danger-bg) !important;
+}
+
+
+/* =========================================================
+   WARNING
+========================================================= */
+
+.rodio-admin-theme .bg-amber-950 {
+  background-color: var(--rodio-warning-bg) !important;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.rodio-admin-theme button {
+  font-family: inherit;
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.rodio-admin-theme button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.rodio-admin-theme button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* Primary buttons */
+
+.rodio-admin-theme button.bg-indigo-600 {
+  color: #ffffff !important;
+  background: var(--rodio-primary) !important;
+
+  box-shadow:
+    0 4px 12px rgba(0, 201, 167, 0.18);
+}
+
+.rodio-admin-theme button.bg-indigo-600:hover {
+  background: var(--rodio-primary-dark) !important;
+}
+
+
+/* Delete buttons */
+
+.rodio-admin-theme button.bg-rose-950 {
+  color: var(--rodio-danger) !important;
+  background: var(--rodio-danger-bg) !important;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.rodio-admin-theme .rounded-2xl {
+  border-radius: 12px;
+}
+
+.rodio-admin-theme .rounded-xl {
+  border-radius: 9px;
+}
+
+.rodio-admin-theme .shadow-xl,
+.rodio-admin-theme .shadow-2xl {
+  box-shadow:
+    0 4px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.rodio-admin-theme > div:first-child {
+  background: #ffffff !important;
+  border: 1px solid var(--rodio-border) !important;
+  box-shadow:
+    0 5px 20px rgba(15, 23, 42, 0.07) !important;
+}
+
+
+/* =========================================================
+   NAVIGATION TABS
+========================================================= */
+
+.rodio-admin-theme button[class*="bg-slate-900"] {
+  background: #ffffff !important;
+  color: #475569 !important;
+  border-color: var(--rodio-border) !important;
+}
+
+.rodio-admin-theme button[class*="bg-slate-900"]:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+
+/* Active tab */
+
+.rodio-admin-theme button[class*="bg-indigo-600\/20"] {
+  background: var(--rodio-primary-soft) !important;
+  border-color: var(--rodio-primary) !important;
+  color: var(--rodio-navy) !important;
+
+  box-shadow:
+    0 2px 8px rgba(0, 201, 167, 0.10);
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.rodio-admin-theme table {
+  width: 100%;
+  font-size: 13px !important;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+
+/* Header */
+
+.rodio-admin-theme thead {
+  background: #f8fafc !important;
+}
+
+.rodio-admin-theme th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+
+  font-size: 11px !important;
+  font-weight: 700 !important;
+
+  text-transform: uppercase;
+  letter-spacing: 0.045em;
+
+  padding: 12px 14px !important;
+
+  border-bottom: 1px solid var(--rodio-border);
+}
+
+
+/* Body */
+
+.rodio-admin-theme td {
+  color: #334155 !important;
+
+  font-size: 13px !important;
+  padding: 13px 14px !important;
+
+  border-bottom: 1px solid #edf1f5;
+
+  vertical-align: middle;
+}
+
+
+/* Row */
+
+.rodio-admin-theme tbody tr {
+  background: #ffffff;
+}
+
+.rodio-admin-theme tbody tr:hover {
+  background: #f8fffd !important;
+}
+
+
+/* First important value */
+
+.rodio-admin-theme td .font-bold {
+  color: #0f172a !important;
+}
+
+
+/* =========================================================
+   TABLE CONTAINER
+========================================================= */
+
+.rodio-admin-theme table {
+  min-width: 850px;
+}
+
+.rodio-admin-theme .overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.rodio-admin-theme input,
+.rodio-admin-theme select,
+.rodio-admin-theme textarea {
+  background: #ffffff !important;
+  color: #1e293b !important;
+
+  border: 1px solid #dbe2ea !important;
+
+  box-shadow: none !important;
+
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.rodio-admin-theme input::placeholder,
+.rodio-admin-theme textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.rodio-admin-theme input:focus,
+.rodio-admin-theme select:focus,
+.rodio-admin-theme textarea:focus {
+  outline: none !important;
+
+  border-color: var(--rodio-primary) !important;
+
+  box-shadow:
+    0 0 0 3px rgba(0, 201, 167, 0.10) !important;
+}
+
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+.rodio-admin-theme label {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+
+/* =========================================================
+   MONOSPACE / IDS
+========================================================= */
+
+.rodio-admin-theme .font-mono {
+  font-family:
+    "SFMono-Regular",
+    Consolas,
+    "Liberation Mono",
+    monospace;
+}
+
+.rodio-admin-theme .font-mono.text-\[10px\] {
+  color: #94a3b8 !important;
+}
+
+
+/* =========================================================
+   LINKS
+========================================================= */
+
+.rodio-admin-theme a {
+  color: var(--rodio-primary-dark);
+  font-weight: 600;
+}
+
+.rodio-admin-theme a:hover {
+  color: #008f79;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.rodio-admin-theme span[class*="bg-emerald-950"] {
+  background: var(--rodio-success-bg) !important;
+  color: var(--rodio-success) !important;
+}
+
+.rodio-admin-theme span[class*="bg-rose-950"] {
+  background: var(--rodio-danger-bg) !important;
+  color: var(--rodio-danger) !important;
+}
+
+.rodio-admin-theme span[class*="bg-amber-950"] {
+  background: var(--rodio-warning-bg) !important;
+  color: var(--rodio-warning) !important;
+}
+
+
+/* =========================================================
+   DATABASE OBJECT BOX
+========================================================= */
+
+.rodio-admin-theme .bg-slate-950.p-2,
+.rodio-admin-theme .bg-slate-950.px-2,
+.rodio-admin-theme .bg-slate-950.px-2\.5 {
+  background: #f8fafc !important;
+  border-color: var(--rodio-border) !important;
+}
+
+
+/* =========================================================
+   STICKY ACTION COLUMN
+========================================================= */
+
+.rodio-admin-theme th.sticky.right-0 {
+  background: #f8fafc !important;
+}
+
+.rodio-admin-theme td.sticky.right-0 {
+  background: #ffffff !important;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.rodio-admin-theme ::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.rodio-admin-theme ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.rodio-admin-theme ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.rodio-admin-theme ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
+
+.rodio-admin-theme h1 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em;
+}
+
+.rodio-admin-theme h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+.rodio-admin-theme h3 {
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+.rodio-admin-theme p {
+  color: #64748b !important;
+}
+
+
+/* =========================================================
+   SMALL TEXT
+========================================================= */
+
+.rodio-admin-theme .text-\[10px\] {
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+}
+
+.rodio-admin-theme .text-xs {
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+  .rodio-admin-theme {
+    padding: 12px !important;
+  }
+
+  .rodio-admin-theme table {
+    min-width: 850px;
+  }
+
+  .rodio-admin-theme th,
+  .rodio-admin-theme td {
+    padding: 10px 12px !important;
+  }
+}

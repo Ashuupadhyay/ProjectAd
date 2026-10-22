@@ -1,0 +1,334 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const API = axios.create({
+  baseURL: "https://rodiotradelink.com/api",
+});
+
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default function AdminHeroSlideManager() {
+  const [slides, setSlides] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [order, setOrder] = useState(0);
+
+  const [desktopFile, setDesktopFile] = useState(null);
+  const [mobileFile, setMobileFile] = useState(null);
+  const [desktopPreview, setDesktopPreview] = useState(null);
+  const [mobilePreview, setMobilePreview] = useState(null);
+
+  const fetchSlides = async () => {
+    try {
+      setLoading(true);
+      const res = await API.get("/hero-slides/admin/all");
+      setSlides(res.data?.data || []);
+    } catch (err) {
+      console.error("API error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSlides();
+  }, []);
+
+  const handleDesktopPick = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setDesktopFile(file);
+      setDesktopPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleMobilePick = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setMobileFile(file);
+      setMobilePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!desktopFile || !mobileFile) {
+      alert("Please select both Desktop and Mobile images.");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("subtitle", subtitle);
+      formData.append("order", order);
+      formData.append("desktopImage", desktopFile);
+      formData.append("mobileImage", mobileFile);
+
+      const res = await API.post("/hero-slides/admin/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (res.data?.success) {
+        alert("Image Cloudinary par upload ho gayi!");
+        setTitle("");
+        setSubtitle("");
+        setOrder(0);
+        setDesktopFile(null);
+        setMobileFile(null);
+        setDesktopPreview(null);
+        setMobilePreview(null);
+        fetchSlides();
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Upload Failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleToggle = async (id) => {
+    try {
+      await API.patch(`/hero-slides/admin/toggle/${id}`);
+      fetchSlides();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Kya is slide ko delete karna chahte hain?")) return;
+    try {
+      await API.delete(`/hero-slides/admin/delete/${id}`);
+      fetchSlides();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto p-4 sm:p-6 bg-slate-50 min-h-screen font-sans">
+      <div className="mb-6 flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Cloudinary Slide Control Panel
+          </h1>
+          <p className="text-xs text-slate-500">
+            Pictures direct Cloudinary par stream hongi aur main site par dikhengi
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={fetchSlides}
+          className="text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 px-3.5 py-1.5 rounded-lg transition font-semibold cursor-pointer"
+        >
+          🔄 Refresh
+        </button>
+      
+        <div>
+          Desktop image size: 1920 × 1080 </div>
+        <div>
+          Mobile image size: 1080 × 1350</div>
+      </div>
+
+      {/* UPLOAD FORM */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 space-y-4"
+      >
+        <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
+          Upload New Slide
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-semibold text-slate-600 mb-1">
+              Title / Heading
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. India's Trusted Transport Network"
+              className="w-full border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm outline-none focus:border-blue-600"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1">
+              Order (0, 1, 2)
+            </label>
+            <input
+              type="number"
+              value={order}
+              onChange={(e) => setOrder(e.target.value)}
+              className="w-full border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm outline-none focus:border-blue-600"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-1">
+            Subtitle / Description
+          </label>
+          <textarea
+            value={subtitle}
+            onChange={(e) => setSubtitle(e.target.value)}
+            placeholder="Text to display below heading..."
+            className="w-full border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm outline-none focus:border-blue-600 h-16"
+          />
+        </div>
+
+        {/* IMAGE PICKERS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          {/* Desktop Pick */}
+          <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center bg-slate-50">
+            <label className="cursor-pointer block">
+              <span className="block text-xs font-bold text-slate-700 mb-1">
+                💻 Desktop Picture (Landscape)
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleDesktopPick}
+                className="hidden"
+              />
+              <span className="inline-block mt-2 bg-white border border-slate-300 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-100">
+                Browse Desktop Picture
+              </span>
+            </label>
+
+            {desktopPreview && (
+              <div className="mt-3">
+                <img
+                  src={desktopPreview}
+                  alt="Desktop Preview"
+                  className="w-full h-24 object-cover rounded-lg border border-slate-200"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Pick */}
+          <div className="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center bg-slate-50">
+            <label className="cursor-pointer block">
+              <span className="block text-xs font-bold text-slate-700 mb-1">
+                📱 Mobile Picture (Portrait / Vertical)
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleMobilePick}
+                className="hidden"
+              />
+              <span className="inline-block mt-2 bg-white border border-slate-300 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-100">
+                Browse Mobile Picture
+              </span>
+            </label>
+
+            {mobilePreview && (
+              <div className="mt-3 flex justify-center">
+                <img
+                  src={mobilePreview}
+                  alt="Mobile Preview"
+                  className="w-16 h-24 object-cover rounded-lg border border-slate-200"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs sm:text-sm transition disabled:opacity-50 cursor-pointer shadow-sm"
+        >
+          {submitting ? "Uploading to Cloudinary..." : "Upload to Cloudinary"}
+        </button>
+      </form>
+
+      {/* CLOUDINARY SLIDES LIST */}
+      <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">
+          Active Live Slides ({slides.length})
+        </h2>
+
+        {loading ? (
+          <p className="text-xs text-slate-500">Loading Cloudinary slides...</p>
+        ) : slides.length === 0 ? (
+          <p className="text-xs text-slate-500">No slides found in database.</p>
+        ) : (
+          <div className="space-y-3">
+            {slides.map((s) => (
+              <div
+                key={s._id}
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 border border-slate-200 rounded-xl gap-3"
+              >
+                <div className="flex items-center gap-3">
+                  <img
+                    src={s.desktopImage}
+                    alt={s.title}
+                    className="w-16 h-10 object-cover rounded-lg border border-slate-200 shrink-0"
+                  />
+                  <img
+                    src={s.mobileImage}
+                    alt={s.title}
+                    className="w-8 h-10 object-cover rounded-lg border border-slate-200 shrink-0"
+                  />
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900">{s.title}</h4>
+                    <p className="text-[11px] text-slate-500 line-clamp-1">{s.subtitle}</p>
+                    <span className="text-[10px] text-slate-400">
+                      Status:{" "}
+                      <span className={s.isActive ? "text-emerald-600 font-bold" : "text-rose-600 font-bold"}>
+                        {s.isActive ? "Active" : "Disabled"}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleToggle(s._id)}
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer ${
+                      s.isActive
+                        ? "bg-amber-100 text-amber-800 hover:bg-amber-200"
+                        : "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
+                    }`}
+                  >
+                    {s.isActive ? "Disable" : "Enable"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(s._id)}
+                    className="px-3 py-1 rounded-lg text-xs font-semibold bg-rose-100 text-rose-800 hover:bg-rose-200 cursor-pointer"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
