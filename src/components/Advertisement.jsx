@@ -12,7 +12,7 @@ import {
   LoaderCircle,
 } from "lucide-react";
 
-const API_BASE_URL = "https://rodio-tradelink.onrender.com/api";
+const API_BASE_URL = "https://rodiotradelink.com/api";
 
 export default function Advertisement() {
   const [userId, setUserId] = useState("");
