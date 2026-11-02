@@ -3,6 +3,7 @@ import HeroSlide from "./HeroSlide";
 import Media from "./Media";
 import Load from "./Load";
 import Review from "./Review";
+import CreateUser from "./CreateUser";
 import React, { useEffect, useState } from "react";
 import { UserRound } from "lucide-react";
 
@@ -909,11 +910,15 @@ const fetchAnalytics = async () => {
 
     setEditingRecord(record);
 
-
-    const cleanedData = {
-      ...record,
-    };
-
+const cleanedData =
+  modelName === "user"
+    ? {
+        _id: record._id,
+        role: record.role,
+        firmName: record.firmName,
+        mobile: record.mobile,
+      }
+    : { ...record };
 
     delete cleanedData.__v;
 
@@ -976,16 +981,9 @@ const fetchAnalytics = async () => {
 
       const data =
         await response.json();
-
-
-      if (!response.ok) {
-
-        throw new Error(
-        
-          "Update failed"
-        );
-      }
-
+if (!response.ok) {
+  throw new Error(data.message || JSON.stringify(data));
+}
 
       const updatedRecord =
         data.data ||
@@ -1036,65 +1034,7 @@ const fetchAnalytics = async () => {
    BUSINESS PRINT
 ========================= */
 
-      else if (selectedModel === "business") {
-
-        headers = [
-          "Firm Name",
-          "Name",
-          "Category",
-          "Phone Number",
-          "Alternate Phone",
-          "WhatsApp Number",
-          "Email",
-          "Address",
-        ];
-
-        rows = tableData.map((business) => {
-
-          const formatValue = (value) => {
-
-            if (
-              value === null ||
-              value === undefined ||
-              value === ""
-            ) {
-              return "-";
-            }
-
-            if (Array.isArray(value)) {
-              return value.length
-                ? value.join(", ")
-                : "-";
-            }
-
-            if (typeof value === "object") {
-              return Object.values(value)
-                .filter(
-                  (v) =>
-                    v !== null &&
-                    v !== undefined &&
-                    v !== ""
-                )
-                .join(", ") || "-";
-            }
-
-            return String(value);
-          };
-
-          return `
-      <tr>
-        <td>${formatValue(business.firmName)}</td>
-        <td>${formatValue(business.name)}</td>
-        <td>${formatValue(business.category)}</td>
-        <td>${formatValue(business.phoneNumber)}</td>
-        <td>${formatValue(business.alternatePhoneNumbers)}</td>
-        <td>${formatValue(business.whatsappNumber)}</td>
-        <td>${formatValue(business.email)}</td>
-        <td>${formatValue(business.address)}</td>
-      </tr>
-    `;
-        });
-      }
+     
       setEditingRecord(null);
 
       setEditFormData({});
@@ -1155,6 +1095,16 @@ fetchAllModelsOverview();
     }
 
     const lowerKey = key.toLowerCase();
+    if (
+  key === "alternatePhoneNumbers" &&
+  Array.isArray(value)
+) {
+  return (
+    <span className="text-sm text-slate-700 break-words">
+      {value.length ? value.join(", ") : "N/A"}
+    </span>
+  );
+}
 
     // ==========================================
     // PASSWORD - NEVER SHOW HASH
@@ -1394,44 +1344,27 @@ fetchAllModelsOverview();
   /* =========================================================
      DYNAMIC KEYS
   ========================================================= */
+const getDynamicKeys = () => {
+  if (selectedModel === "user") {
+    return ["_id", "role", "firmName", "mobile"];
+  }
 
-  const getDynamicKeys = () => {
+  if (tableData && tableData.length > 0) {
+    const allKeys = new Set();
 
-    if (
-      tableData &&
-      tableData.length > 0
-    ) {
-
-      const allKeys =
-        new Set();
-
-      tableData.forEach(
-        (item) => {
-
-          Object.keys(item).forEach(
-            (key) => {
-
-              if (
-                key !== "__v"
-              ) {
-
-                allKeys.add(key);
-              }
-            }
-          );
+    tableData.forEach((item) => {
+      Object.keys(item).forEach((key) => {
+        if (key !== "__v") {
+          allKeys.add(key);
         }
-      );
+      });
+    });
 
-      return Array.from(allKeys);
-    }
+    return Array.from(allKeys);
+  }
 
-
-    return (
-      DEFAULT_MODEL_KEYS[
-      selectedModel
-      ] || ["_id"]
-    );
-  };
+  return DEFAULT_MODEL_KEYS[selectedModel] || ["_id"];
+};
   /* =========================================================
      PRINT DATABASE SHEET
   ========================================================= */
@@ -2741,7 +2674,26 @@ else if (selectedModel === "payment") {
 
           </button>
 
+{/* CREATE USER */}
 
+<button
+  onClick={() => handleSectionClick("create_user")}
+  className={`p-4 rounded-xl border transition text-left ${
+    activeTab === "create_user"
+      ? "bg-blue-600 text-white border-blue-600 shadow-lg"
+      : "bg-white text-gray-700 border-gray-200 hover:border-blue-300"
+  }`}
+>
+  <UserPlus size={21} />
+
+  <p className="font-semibold mt-2">
+    Create User
+  </p>
+
+  <p className="text-xs opacity-70 mt-1">
+    Employee Id Create
+  </p>
+</button>
           {/* LOAD MANAGEMENT */}
           <button
             onClick={() =>
@@ -3423,22 +3375,7 @@ else if (selectedModel === "payment") {
 
                                 <div className="flex justify-end gap-2">
 
-                                  <button
-                                    onClick={() =>
-                                      handleOpenEditModal(
-                                        "user",
-                                        user
-                                      )
-                                    }
-                                    className="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100"
-                                  >
-
-                                    <Edit
-                                      size={16}
-                                    />
-
-                                  </button>
-
+                             
 
                                   <button
                                     onClick={() =>
@@ -3730,7 +3667,7 @@ else if (selectedModel === "payment") {
                     </h2>
 
                     <p className="text-sm text-gray-500 mt-1">
-                      MongoDB collections manage karo
+                      
                     </p>
 
                   </div>
@@ -3751,19 +3688,23 @@ else if (selectedModel === "payment") {
                       }
                       className="border rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500"
                     >
+{modelsList.map((model) => {
+  const labels = {
+    user: "Register Model",
+    business: "Business Details Model",
+    booking: "Loads model",
+    payment: "Payments Model",
+  };
 
-                      {modelsList.map(
-                        (model) => (
-
-                          <option
-                            key={model}
-                            value={model}
-                          >
-                            {model}
-                          </option>
-
-                        )
-                      )}
+  return (
+    <option
+      key={model}
+      value={model}
+    >
+      {labels[model] || model}
+    </option>
+  );
+})}
 
                     </select>
 
@@ -4006,7 +3947,11 @@ else if (selectedModel === "payment") {
             <Register />
 
           )}
+{/* CREATE USER */}
 
+{activeTab === "create_user" && (
+  <CreateUser />
+)}
           {activeTab === "load_management" && (
   <Load />
 )}
@@ -4094,171 +4039,295 @@ else if (selectedModel === "payment") {
 
             {/* FORM */}
 
-            <div className="p-6 space-y-5">
+{/* FORM */}
 
-              {Object.entries(
-                editFormData
-              ).map(
-                ([key, value]) => {
+<div className="p-6 space-y-5">
 
-                  if (
-                    key === "_id" ||
-                    key === "__v"
-                  ) {
-                    return null;
-                  }
+  {Object.entries(editFormData).map(([key, value]) => {
+
+    if (
+      key === "_id" ||
+      key === "__v" ||
+      (activeTab === "subscription_tracker" &&
+        key.toLowerCase() === "password")
+    ) {
+      return null;
+    }
+
+    if (
+      key === "createdAt" ||
+      key === "updatedAt"
+    ) {
+      return null;
+    }
+
+    const isArray = Array.isArray(value);
+
+    const isObject =
+      typeof value === "object" &&
+      value !== null &&
+      !isArray;
+
+    return (
+      <div key={key}>
+
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          {key}
+        </label>
+
+        {/* ROLE DROPDOWN */}
+        {key === "role" ? (
+
+          <select
+            value={value ?? ""}
+            onChange={(e) =>
+              handleEditChange(
+                key,
+                e.target.value
+              )
+            }
+            className="w-full border rounded-xl px-4 py-3 bg-white outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="user">user</option>
+            <option value="transporter">transporter</option>
+            <option value="fleet_owner">fleet_owner</option>
+            <option value="cha_agent">cha_agent</option>
+            <option value="courier">courier</option>
+            <option value="bus_service">bus_service</option>
+            <option value="travel_taxi">travel_taxi</option>
+            <option value="truck_body_builder">
+              truck_body_builder
+            </option>
+            <option value="rto_agent">rto_agent</option>
+            <option value="finance_company">
+              finance_company
+            </option>
+            <option value="finance_agent">
+              finance_agent
+            </option>
+            <option value="packers_movers">
+              packers_movers
+            </option>
+            <option value="insurance_company">
+              insurance_company
+            </option>
+            <option value="car_carrier">
+              car_carrier
+            </option>
+            <option value="miningvehicle_supplier">
+              miningvehicle_supplier
+            </option>
+            <option value="partstypesbettry_supplier">
+              partstypesbettry_supplier
+            </option>
+            <option value="mechanic and service center">
+              mechanic and service center
+            </option>
+            <option value="biketexiauto">
+              biketexiauto
+            </option>
+            <option value="candfagent">
+              candfagent
+            </option>
+          </select>
+) : selectedModel === "business" && key === "category" ? (
+  <select
+    value={value ?? ""}
+    onChange={(e) =>
+      handleEditChange(
+        key,
+        e.target.value
+      )
+    }
+    className="w-full border rounded-xl px-4 py-3 bg-white outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    <option value="">Select category</option>
 
 
-                  if (
-                    key === "createdAt" ||
-                    key === "updatedAt"
-                  ) {
-                    return null;
-                  }
+    <option value="transporter">transporter</option>
+    <option value="fleet_owner">fleet_owner</option>
+    <option value="cha_agent">cha_agent</option>
+    <option value="courier">courier</option>
+    <option value="bus_service">bus_service</option>
+    <option value="travel_taxi">travel_taxi</option>
+    <option value="truck_body_builder">truck_body_builder</option>
+    <option value="rto_agent">rto_agent</option>
+    <option value="finance_company">finance_company</option>
+    <option value="finance_agent">finance_agent</option>
+    <option value="packers_movers">packers_movers</option>
+    <option value="insurance_company">insurance_company</option>
+    <option value="car_carrier">car_carrier</option>
+    <option value="miningvehicle_supplier">miningvehicle_supplier</option>
+    <option value="partstypesbettry_supplier">
+      partstypesbettry_supplier
+    </option>
+    <option value="mechanic and service center">
+      mechanic and service center
+    </option>
+    <option value="biketexiauto">biketexiauto</option>
+    <option value="candfagent">candfagent</option>
+  </select>
+       ) : key === "alternatePhoneNumbers" ? (
+  <input
+    type="text"
+    value={Array.isArray(value) ? value.join(", ") : value ?? ""}
+    onChange={(e) =>
+      handleEditChange(
+        key,
+        e.target.value
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+      )
+    }
+    placeholder="Enter alternate phone number"
+    className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+  />
 
+) : isArray ? (
 
-                  const isObject =
-                    typeof value ===
-                    "object" &&
-                    value !== null;
+          /* ARRAY FIELD */
 
+          <input
+            type="text"
+            value={value.join(", ")}
+            onChange={(e) =>
+              handleEditChange(
+                key,
+                e.target.value
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter(Boolean)
+              )
+            }
+            placeholder={`Enter ${key}`}
+            className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
-                  return (
+        ) : isObject ? (
 
-                    <div
-                      key={key}
-                    >
+          /* OBJECT FIELD */
 
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
-                        {key}
-                      </label>
+          <div className="border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3">
 
+            {Object.entries(value).map(
+              ([objectKey, objectValue]) => {
 
-                      {isObject ? (
+                const nestedArray =
+                  Array.isArray(objectValue);
 
-                        <textarea
-                          value={JSON.stringify(
-                            value,
-                            null,
-                            2
-                          )}
-                          onChange={(e) => {
+                return (
+                  <div key={objectKey}>
 
-                            try {
+                    <label className="block text-xs font-semibold text-gray-600 mb-1">
+                      {objectKey}
+                    </label>
 
-                              const parsed =
-                                JSON.parse(
-                                  e.target.value
-                                );
+                    <input
+                      type="text"
+                      value={
+                        nestedArray
+                          ? objectValue.join(", ")
+                          : objectValue ?? ""
+                      }
+                      onChange={(e) => {
 
-                              handleEditChange(
-                                key,
-                                parsed
-                              );
+                        let newValue =
+                          e.target.value;
 
-                            } catch {
+                        if (nestedArray) {
+                          newValue =
+                            e.target.value
+                              .split(",")
+                              .map((item) =>
+                                item.trim()
+                              )
+                              .filter(Boolean);
+                        }
 
-                              handleEditChange(
-                                key,
-                                e.target.value
-                              );
-
-                            }
-
-                          }}
-                          rows={5}
-                          className="w-full border rounded-xl p-3 font-mono text-xs outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-
-                      ) : (
-
-                        <input
-                          value={
-                            value ??
-                            ""
+                        handleEditChange(
+                          key,
+                          {
+                            ...value,
+                            [objectKey]:
+                              newValue,
                           }
-                          onChange={(e) =>
-                            handleEditChange(
-                              key,
-                              e.target.value
-                            )
-                          }
-                          className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-                        />
+                        );
+                      }}
+                      placeholder={`Enter ${objectKey}`}
+                      className="w-full border rounded-lg px-3 py-2 bg-white outline-none focus:ring-2 focus:ring-blue-500"
+                    />
 
-                      )}
+                  </div>
+                );
+              }
+            )}
 
-                    </div>
+          </div>
 
-                  );
+        ) : (
 
-                }
-              )}
+          /* NORMAL FIELD */
 
+          <input
+            type="text"
+            value={value ?? ""}
+            onChange={(e) =>
+              handleEditChange(
+                key,
+                e.target.value
+              )
+            }
+            className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
-              {/* BUTTONS */}
+        )}
 
-              <div className="flex gap-3 pt-4">
-
-                <button
-                  onClick={() => {
-
-                    setEditingRecord(
-                      null
-                    );
-
-                    setEditFormData(
-                      {}
-                    );
-
-                  }}
-                  className="flex-1 border border-gray-300 rounded-xl py-3 font-semibold hover:bg-gray-50"
-                >
-                  Cancel
-                </button>
+      </div>
+    );
+  })}
 
 
-                <button
-                  onClick={
-                    handleUpdateRecord
-                  }
-                  disabled={
-                    isUpdating
-                  }
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 font-semibold flex items-center justify-center gap-2 disabled:opacity-60"
-                >
+  {/* BUTTONS */}
 
-                  {isUpdating ? (
+  <div className="flex gap-3 pt-4">
 
-                    <>
+    <button
+      onClick={() => {
+        setEditingRecord(null);
+        setEditFormData({});
+      }}
+      className="flex-1 border border-gray-300 rounded-xl py-3 font-semibold hover:bg-gray-50"
+    >
+      Cancel
+    </button>
 
-                      <RefreshCw
-                        size={17}
-                        className="animate-spin"
-                      />
+    <button
+      onClick={handleUpdateRecord}
+      disabled={isUpdating}
+      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3 font-semibold flex items-center justify-center gap-2 disabled:opacity-60"
+    >
 
-                      Updating...
+      {isUpdating ? (
+        <>
+          <RefreshCw
+            size={17}
+            className="animate-spin"
+          />
+          Updating...
+        </>
+      ) : (
+        <>
+          <Save size={17} />
+          Save Changes
+        </>
+      )}
 
-                    </>
+    </button>
 
-                  ) : (
+  </div>
 
-                    <>
-
-                      <Save size={17} />
-
-                      Save Changes
-
-                    </>
-
-                  )}
-
-                </button>
-
-              </div>
-
-            </div>
-
+</div>
           </div>
 
         </div>

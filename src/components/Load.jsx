@@ -640,62 +640,18 @@ export default function Load() {
 
               <div>
 
-                <label className="mb-2 block text-sm font-semibold text-gray-700">
-                  Creator Role *
-                </label>
+                
 
-                <select
-                  name="creatorRole"
-                  value={form.creatorRole}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                >
+               
 
-                  {creatorRoles.map(
-                    (role) => (
-                      <option
-                        key={role}
-                        value={role}
-                      >
-                        {role}
-                      </option>
-                    )
-                  )}
-
-                </select>
+          
 
               </div>
 
               <div>
 
-                <label className="mb-2 block text-sm font-semibold text-gray-700">
-                  Status
-                </label>
 
-                <select
-                  name="status"
-                  value={form.status}
-                  onChange={handleChange}
-                  className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                >
-
-                  <option value="Open">
-                    Open
-                  </option>
-
-                  <option value="Assigned">
-                    Assigned
-                  </option>
-
-                  <option value="Completed">
-                    Completed
-                  </option>
-
-                  <option value="Cancelled">
-                    Cancelled
-                  </option>
-
-                </select>
+              
 
               </div>
 
