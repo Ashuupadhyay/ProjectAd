@@ -272,8 +272,7 @@ export default function PasswordResetControl() {
           </h2>
 
           <p className="text-xs text-gray-500 mt-1">
-            Admin user ka password securely reset
-            kar sakta hai
+            
           </p>
         </div>
 
@@ -315,12 +314,7 @@ export default function PasswordResetControl() {
               Password Security
             </div>
 
-            <div className="text-xs text-amber-700 mt-1">
-              Existing password display nahi kiya
-              ja sakta. Password bcrypt hash me
-              stored hai. Admin sirf naya password
-              reset kar sakta hai.
-            </div>
+          
 
           </div>
 

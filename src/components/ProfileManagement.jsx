@@ -193,9 +193,7 @@ export default function ProfileManagement() {
           <div>
             <h2 className="text-xl font-bold text-slate-900">
 advertisement</h2>
-            <p className="text-sm text-slate-500">
-              Register User OID se profile search aur image manage karein
-            </p>
+            
           </div>
         </div>
 

@@ -312,9 +312,7 @@ export default function Register() {
                   Register New User
                 </h2>
 
-                <p className="text-xs text-gray-500 mt-1">
-                  Create a new user using the registration API
-                </p>
+               
               </div>
 
             </div>
@@ -489,7 +487,7 @@ export default function Register() {
               </h2>
 
               <p className="text-xs text-gray-500 mt-1">
-                Newly registered users and their MongoDB Object IDs
+          
               </p>
             </div>
 

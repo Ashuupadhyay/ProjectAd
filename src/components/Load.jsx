@@ -547,9 +547,7 @@ export default function Load() {
             Load Management
           </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Create and manage loads from the admin panel.
-          </p>
+        
         </div>
 
         <div className="flex gap-2">

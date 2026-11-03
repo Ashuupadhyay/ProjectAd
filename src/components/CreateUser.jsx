@@ -50,7 +50,6 @@ export default function CreateUser() {
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Failed to fetch users");
       }
-
       setUsers(data.data || []);
     } catch (err) {
       setError(err.message);
@@ -380,7 +379,7 @@ Password: ${successUser.password}`;
             <table className="w-full min-w-[850px] text-sm text-left">
               <thead>
                 <tr className="bg-slate-50 text-slate-600 border-b">
-                  <th className="p-4">User ID</th>
+                  
                   <th className="p-4">Name</th>
                   <th className="p-4">Mobile</th>
                   <th className="p-4">Email</th>
@@ -395,9 +394,7 @@ Password: ${successUser.password}`;
                     key={user._id}
                     className="border-b last:border-0 hover:bg-slate-50"
                   >
-                    <td className="p-4 font-semibold text-blue-700">
-                      {user.userId}
-                    </td>
+                   
                     <td className="p-4 font-medium text-slate-800">
                       {user.name}
                     </td>

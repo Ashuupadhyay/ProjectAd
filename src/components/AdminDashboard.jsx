@@ -1,4 +1,3 @@
-
 import HeroSlide from "./HeroSlide";
 import Media from "./Media";
 import Load from "./Load";
@@ -7,13 +6,14 @@ import CreateUser from "./CreateUser";
 import React, { useEffect, useState } from "react";
 import { UserRound } from "lucide-react";
 
+
 import ManualPaymentControl from "./ManualPaymentControl";
 import ManualDocumentVerification from "./ManualDocumentVerification";
 import PasswordResetControl from "./PasswordResetControl";
 import Register from "./Register";
 import ProfileManagement from "./ProfileManagement";
 import Advertisement from "./Advertisement";
-
+import EmployeeComplaints from "./EmployeeComplaints";
 import {
   PieChart,
   Pie,
@@ -43,7 +43,6 @@ import {
   Save,
   Briefcase,
   ExternalLink,
-  Lock,
   KeyRound,
   AlertTriangle,
   Eye,
@@ -286,21 +285,12 @@ export default function AdminDashboard() {
   const [referralSearch, setReferralSearch] = useState("");
   
   const [subscriptionSearch, setSubscriptionSearch] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const [inputPassword, setInputPassword] = useState("");
 
-  const [showPassword, setShowPassword] = useState(false);
 
-  const [failedAttempts, setFailedAttempts] = useState(0);
 
-  const [isLocked, setIsLocked] = useState(false);
 
-  const [lockTimeLeft, setLockTimeLeft] = useState("");
 
-  const [loginError, setLoginError] = useState("");
-
-  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
 
 
   /* =========================================================
@@ -353,213 +343,6 @@ export default function AdminDashboard() {
   ========================================================= */
 
   const [oldDummyBusinessIds, setOldDummyBusinessIds] = useState([]);
-
-
-  /* =========================================================
-     SECURITY LOCK
-  ========================================================= */
-
-  useEffect(() => {
-
-    const attempts =
-      Number(localStorage.getItem("admin_login_attempts") || 0);
-
-    const lockUntil =
-      Number(localStorage.getItem("admin_lock_until") || 0);
-
-    setFailedAttempts(attempts);
-
-    if (lockUntil && Date.now() < lockUntil) {
-
-      setIsLocked(true);
-
-      calculateTimeLeft(lockUntil);
-
-    } else {
-
-      localStorage.removeItem("admin_lock_until");
-
-      setIsLocked(false);
-      setLockTimeLeft("");
-    }
-
-  }, []);
-
-
-  /* =========================================================
-     CALCULATE LOCK TIME
-  ========================================================= */
-
-  const calculateTimeLeft = (lockUntil) => {
-
-    const update = () => {
-
-      const difference = lockUntil - Date.now();
-
-      if (difference <= 0) {
-
-        setIsLocked(false);
-
-        setLockTimeLeft("");
-
-        localStorage.removeItem("admin_lock_until");
-
-        localStorage.removeItem("admin_login_attempts");
-
-        setFailedAttempts(0);
-
-        return;
-      }
-
-      const hours = Math.floor(
-        difference / (1000 * 60 * 60)
-      );
-
-      const minutes = Math.floor(
-        (difference % (1000 * 60 * 60)) /
-        (1000 * 60)
-      );
-
-      const seconds = Math.floor(
-        (difference % (1000 * 60)) /
-        1000
-      );
-
-      setLockTimeLeft(
-        `${hours}h ${minutes}m ${seconds}s`
-      );
-    };
-
-    update();
-
-    const timer = setInterval(update, 1000);
-
-    return () => clearInterval(timer);
-  };
-
-
-  /* =========================================================
-     WRONG PASSWORD
-  ========================================================= */
-
-  const handleWrongPassword = () => {
-
-    const newAttempts = failedAttempts + 1;
-
-    setFailedAttempts(newAttempts);
-
-    localStorage.setItem(
-      "admin_login_attempts",
-      String(newAttempts)
-    );
-
-    if (newAttempts >= 5) {
-
-      const lockUntil =
-        Date.now() + 24 * 60 * 60 * 1000;
-
-      localStorage.setItem(
-        "admin_lock_until",
-        String(lockUntil)
-      );
-
-      setIsLocked(true);
-
-      calculateTimeLeft(lockUntil);
-
-      setLoginError(
-        "5 wrong attempts. Admin login 24 hours ke liye locked hai."
-      );
-
-    } else {
-
-      setLoginError(
-        `Wrong password. ${5 - newAttempts} attempts remaining.`
-      );
-    }
-  };
-
-
-  /* =========================================================
-     ADMIN LOGIN
-  ========================================================= */
-
-  const handleLoginSubmit = async (e) => {
-
-    e.preventDefault();
-
-    if (isLocked) return;
-
-    if (!inputPassword.trim()) {
-
-      setLoginError("Password enter karo.");
-
-      return;
-    }
-
-    setIsLoadingLogin(true);
-
-    setLoginError("");
-
-    try {
-
-      const response = await fetch(
-        "/api/admin/verify-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          credentials: "include",
-
-          body: JSON.stringify({
-            password: inputPassword,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-
-        handleWrongPassword();
-
-        setInputPassword("");
-
-        return;
-      }
-
-
-      /* LOGIN SUCCESS */
-
-      setIsAuthenticated(true);
-
-      setInputPassword("");
-
-      setFailedAttempts(0);
-
-      localStorage.removeItem(
-        "admin_login_attempts"
-      );
-
-      localStorage.removeItem(
-        "admin_lock_until"
-      );
-
-    } catch (error) {
-
-      console.error("Admin Login Error:", error);
-
-      setLoginError(
-        "Server se connection nahi ho pa raha."
-      );
-
-    } finally {
-
-      setIsLoadingLogin(false);
-    }
-  };
 
 
   /* =========================================================
@@ -1067,19 +850,14 @@ if (!response.ok) {
      FETCH ON LOGIN / SEARCH / MODEL
   ========================================================= */
 
-  useEffect(() => {
+ useEffect(() => {
+  fetchModelData();
+  fetchAllModelsOverview();
 
-    if (!isAuthenticated) return;
-
-   fetchModelData();
-fetchAllModelsOverview();
-
-  }, [
-    isAuthenticated,
-    selectedModel,
-    search,
-  ]);
-
+}, [
+  selectedModel,
+  search,
+]);
 
   /* =========================================================
      FORMAT CELL VALUE
@@ -2157,247 +1935,6 @@ else if (selectedModel === "payment") {
   };
 
   /* =========================================================
-     LOGOUT / LOCK
-  ========================================================= */
-
-  const handleLockDashboard = () => {
-
-    setIsAuthenticated(false);
-
-    setActiveTab("analytics_hub");
-
-    setInputPassword("");
-
-    setLoginError("");
-  };
-
-
-  /* =========================================================
-     LOGIN SCREEN
-  ========================================================= */
-
-  if (!isAuthenticated) {
-
-    return (
-     <div className="min-h-screen bg-[#020817] flex items-center justify-center px-4 relative overflow-hidden">
-       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-
-  <div
-    className="absolute inset-0 opacity-10"
-    style={{
-      backgroundImage: `
-        linear-gradient(rgba(59,130,246,.35) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(59,130,246,.35) 1px, transparent 1px)
-      `,
-      backgroundSize: "45px 45px"
-    }}
-  />
-
-  <div className="absolute top-20 left-10 w-3 h-3 rounded-full bg-blue-400 shadow-[0_0_25px_#3b82f6] animate-ping" />
-
-  <div className="absolute top-40 right-20 w-3 h-3 rounded-full bg-orange-400 shadow-[0_0_25px_#f59e0b] animate-ping" />
-
-  <div className="absolute bottom-32 left-1/4 w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_20px_#06b6d4] animate-ping" />
-
-  <div className="absolute bottom-20 right-1/4 w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_20px_#3b82f6] animate-ping" />
-
-  <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent animate-pulse" />
-
-  <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-600/10 blur-[100px] animate-pulse" />
-
-</div>
-       
-        <div className="w-full max-w-md">
-
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-
-            {/* HEADER */}
-
-            <div className="bg-gradient-to-r from-blue-700 to-indigo-700 px-8 py-8 text-white text-center">
-
-              <h1 className="text-3xl font-extrabold tracking-tight">
-  <span className="text-black">RODIO</span>{" "}
-  <span className="text-orange-600">Tradelink</span>
-</h1>
-
-<p className="text-blue-100 mt-1">
-  Admin Control Panel
-</p>
-            </div>
-
-
-            {/* FORM */}
-
-            <div className="p-8">
-
-              {isLocked ? (
-
-                <div className="text-center">
-
-                  <div className="mx-auto w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mb-4">
-
-                    <Lock size={30} />
-
-                  </div>
-
-                  <h2 className="text-xl font-bold text-gray-800">
-                    Admin Locked
-                  </h2>
-
-                  <p className="text-gray-500 mt-2">
-                    Too many wrong password attempts.
-                  </p>
-
-                  <div className="mt-5 bg-red-50 rounded-xl p-4">
-
-                    <p className="text-sm text-red-600">
-                      Try again after
-                    </p>
-
-                    <p className="text-2xl font-bold text-red-700 mt-1">
-                      {lockTimeLeft}
-                    </p>
-
-                  </div>
-
-                </div>
-
-              ) : (
-
-                <form
-                  onSubmit={
-                    handleLoginSubmit
-                  }
-                  className="space-y-5"
-                >
-
-                  <div>
-
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Admin Password
-                    </label>
-
-                    <div className="relative">
-
-                      <KeyRound
-                        size={18}
-                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                      />
-
-                      <input
-                        type={
-                          showPassword
-                            ? "text"
-                            : "password"
-                        }
-                        value={
-                          inputPassword
-                        }
-                        onChange={(e) =>
-                          setInputPassword(
-                            e.target.value
-                          )
-                        }
-                        placeholder="Enter admin password"
-                        className="w-full border border-gray-300 rounded-xl pl-10 pr-12 py-3 outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setShowPassword(
-                            !showPassword
-                          )
-                        }
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-                      >
-
-                        {showPassword ? (
-                          <EyeOff size={19} />
-                        ) : (
-                          <Eye size={19} />
-                        )}
-
-                      </button>
-
-                    </div>
-
-                  </div>
-
-
-                  {loginError && (
-
-                    <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-3 text-sm flex gap-2">
-
-                      <AlertTriangle
-                        size={18}
-                        className="shrink-0"
-                      />
-
-                      <span>
-                        {loginError}
-                      </span>
-
-                    </div>
-
-                  )}
-
-
-                  <button
-                    type="submit"
-                    disabled={
-                      isLoadingLogin
-                    }
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
-                  >
-
-                    {isLoadingLogin ? (
-
-                      <>
-                        <RefreshCw
-                          size={18}
-                          className="animate-spin"
-                        />
-
-                        Checking...
-                      </>
-
-                    ) : (
-
-                      <>
-                        <ShieldCheck
-                          size={18}
-                        />
-
-                        Login to Admin
-                      </>
-
-                    )}
-
-                  </button>
-
-
-                  <p className="text-center text-xs text-red-400">
-                    Failed attempts:{" "}
-                    {failedAttempts}/5
-                  </p>
-
-                </form>
-
-              )}
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-    );
-  }
-
-
-  /* =========================================================
      MAIN DASHBOARD
   ========================================================= */
 
@@ -2428,7 +1965,15 @@ else if (selectedModel === "payment") {
     </p>
   </div>
 </div>
-
+<a
+  href="https://rodiotradelink.com"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-sm font-semibold text-orange-400 hover:text-orange-300 transition flex items-center gap-2"
+>
+  rodiotradelink.com
+  <ExternalLink size={14} />
+</a>
 
             <div className="flex items-center gap-2">
 
@@ -2453,18 +1998,6 @@ else if (selectedModel === "payment") {
               </button>
 
 
-              <button
-                onClick={
-                  handleLockDashboard
-                }
-                className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg flex items-center gap-2 text-sm"
-              >
-
-                <Lock size={16} />
-
-                Lock
-
-              </button>
 
             </div>
 
@@ -2687,7 +2220,7 @@ else if (selectedModel === "payment") {
   <UserPlus size={21} />
 
   <p className="font-semibold mt-2">
-    Create User
+    Create Employee Id
   </p>
 
   <p className="text-xs opacity-70 mt-1">
@@ -2739,27 +2272,6 @@ else if (selectedModel === "payment") {
 
 
 
-{/* HERO SLIDES */}
-<button
-  onClick={() =>
-    handleSectionClick("hero_slides")
-  }
-  className={`p-4 rounded-xl border transition text-left ${
-    activeTab === "hero_slides"
-      ? "bg-purple-600 text-white border-purple-600 shadow-lg"
-      : "bg-white text-gray-700 border-gray-200 hover:border-purple-300"
-  }`}
->
-  <Layers size={21} />
-
-  <p className="font-semibold mt-2">
-    Hero Slides
-  </p>
-
-  <p className="text-xs opacity-70 mt-1">
-    Manage Homepage Slides
-  </p>
-</button>
 
 
 
@@ -2847,6 +2359,28 @@ else if (selectedModel === "payment") {
 
   <p className="text-xs opacity-70 mt-1">
     Website Traffic & Reports
+  </p>
+</button>
+
+
+{/* EMPLOYEE COMPLAINTS */}
+<button
+  type="button"
+  onClick={() => handleSectionClick("employee_complaints")}
+  className={`p-4 rounded-xl border transition text-left ${
+    activeTab === "employee_complaints"
+      ? "bg-rose-600 text-white border-rose-600 shadow-lg"
+      : "bg-white text-gray-700 border-gray-200 hover:border-rose-300"
+  }`}
+>
+  <ShieldAlert size={21} />
+
+  <p className="font-semibold mt-2">
+    Employee Complaints
+  </p>
+
+  <p className="text-xs opacity-70 mt-1">
+    Review & Manage Complaints
   </p>
 </button>
         </div>
@@ -3179,7 +2713,7 @@ else if (selectedModel === "payment") {
                 </h2>
 
                 <p className="text-sm text-gray-500 mt-1">
-                  All registered users and subscription information
+                  
                 </p>
 
                 {/* SUBSCRIPTION SEARCH */}
@@ -3769,18 +3303,21 @@ else if (selectedModel === "payment") {
 
                       <tr>
 
-                        {getDynamicKeys().map(
-                          (key) => (
+                {getDynamicKeys().map((key) => {
+  const labels = {
+    firmName: "Firm Name",
+    role: "Category",
+  };
 
-                            <th
-                              key={key}
-                              className="text-left p-4 whitespace-nowrap bg-slate-50 text-xs font-bold uppercase tracking-wide"
-                            >
-                              {key}
-                            </th>
-
-                          )
-                        )}
+  return (
+    <th
+      key={key}
+      className="text-left p-4 whitespace-nowrap bg-slate-50 text-xs font-bold uppercase tracking-widest"
+    >
+{labels[key] || key.replace(/([a-z])([A-Z])/g, "$1   $2").replace(/^./, (str) => str.toUpperCase())}
+    </th>
+  );
+})}
 
                         <th className="text-right p-4">
                           Actions
@@ -3983,6 +3520,12 @@ else if (selectedModel === "payment") {
 
 {activeTab === "Ads_management" && (
   <Advertisement/>
+)}
+
+
+{/* EMPLOYEE COMPLAINTS */}
+{activeTab === "employee_complaints" && (
+  <EmployeeComplaints />
 )}
 
       </main>

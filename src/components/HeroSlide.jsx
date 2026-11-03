@@ -126,11 +126,9 @@ export default function AdminHeroSlideManager() {
       <div className="mb-6 flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">
-            Cloudinary Slide Control Panel
+            Hero Slide Control Panel
           </h1>
-          <p className="text-xs text-slate-500">
-            Pictures direct Cloudinary par stream hongi aur main site par dikhengi
-          </p>
+          
         </div>
 
         <button
