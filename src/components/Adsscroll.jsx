@@ -251,73 +251,16 @@ const Adsscroll = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               {/* TITLE */}
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Advertisement Title
-                </label>
-
-                <input
-                  type="text"
-                  value={form.title}
-                  onChange={(e) =>
-                    setForm({ ...form, title: e.target.value })
-                  }
-                  placeholder="Enter advertisement title"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-                />
-              </div>
+           
 
               {/* LINK */}
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Redirect URL
-                </label>
-
-                <input
-                  type="url"
-                  value={form.link}
-                  onChange={(e) =>
-                    setForm({ ...form, link: e.target.value })
-                  }
-                  placeholder="https://example.com"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-                />
-              </div>
+            
 
               {/* PLACEMENT */}
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Placement
-                </label>
-
-                <select
-                  value={form.placement}
-                  onChange={(e) =>
-                    setForm({ ...form, placement: e.target.value })
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-                >
-                  <option value="directory">Directory</option>
-                  <option value="transport">Transport</option>
-                </select>
-              </div>
+              
 
               {/* SORT ORDER */}
-              <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
-                  Sort Order
-                </label>
-
-                <input
-                  type="number"
-                  min="0"
-                  value={form.sortOrder}
-                  onChange={(e) =>
-                    setForm({ ...form, sortOrder: e.target.value })
-                  }
-                  className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-                />
-              </div>
+            
             </div>
 
             {/* IMAGE UPLOAD */}
