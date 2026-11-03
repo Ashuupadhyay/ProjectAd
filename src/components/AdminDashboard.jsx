@@ -404,7 +404,7 @@ const fetchAnalytics = async () => {
     try {
 
       const url =
-        `/api/admin/crud/${selectedModel}`;
+        `https://rodiotradelink.info/api/admin/crud/${selectedModel}`;
 
       const response = await fetch(url, {
         credentials: "include",
@@ -488,7 +488,7 @@ const fetchAnalytics = async () => {
           try {
 
             const response = await fetch(
-              `/api/admin/crud/${model}`,
+              `https://rodiotradelink.info/api/admin/crud/${model}`,
               {
                 credentials: "include",
               }
@@ -602,7 +602,7 @@ const fetchAnalytics = async () => {
     try {
 
       const response = await fetch(
-        `/api/admin/crud/${targetModel}/${recordId}`,
+        `https://rodiotradelink.info/api/admin/crud/${targetModel}/${recordId}`,
         {
           method: "DELETE",
 
