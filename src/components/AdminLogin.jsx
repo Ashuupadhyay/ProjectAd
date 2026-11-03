@@ -150,19 +150,9 @@ export function AdminLogin() {
 
 
 
-
-const response = await fetch(
-  "http://localhost:5001/api/admin/verify-password",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      password: inputPassword,
-    }),
-  }
-);
+const response = await api.post("/admin/verify-password", {
+  password: inputPassword,
+});
 
 const data = await response.json();
 
