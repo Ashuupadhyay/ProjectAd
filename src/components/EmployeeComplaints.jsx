@@ -16,7 +16,7 @@ import {
 import * as XLSX from "xlsx";
 
 const API_BASE_URL =
-  "http://localhost:5001/api/admin-created-users/complaints";
+  "https://rodiotradelink.info/api/admin-created-users/complaints";
 
 const EmployeeComplaints = () => {
   const [complaints, setComplaints] = useState([]);

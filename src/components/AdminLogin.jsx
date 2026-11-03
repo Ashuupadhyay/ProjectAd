@@ -150,9 +150,19 @@ export function AdminLogin() {
 
 
 
-const response = await api.post("/admin/verify-password", {
-  password: inputPassword,
-});
+
+const response = await fetch(
+   "https://rodiotradelink.info/api/admin/verify-password",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      password: inputPassword,
+    }),
+  }
+);
 
 const data = await response.json();
 

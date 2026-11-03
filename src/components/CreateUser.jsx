@@ -12,7 +12,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-const API_URL = "/api/admin-created-users";
+const API_URL = "https://rodiotradelink.info/api/admin-created-users";
 
 const initialForm = {
   name: "",
